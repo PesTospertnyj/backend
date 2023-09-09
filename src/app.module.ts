@@ -3,11 +3,12 @@ import { UsersModule } from './api/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CoffeesModule } from './api/coffees/coffees.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env.local',
+      envFilePath: '.env',
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
@@ -26,6 +27,7 @@ import { CoffeesModule } from './api/coffees/coffees.module';
     }),
     UsersModule,
     CoffeesModule,
+    DatabaseModule,
   ],
   controllers: [],
   providers: [],

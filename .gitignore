@@ -39,3 +39,4 @@ lerna-debug.log*
 *.iml
 
 .env.local
+.env
