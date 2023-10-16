@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CoffeesModule } from './api/coffees/coffees.module';
 import { DatabaseModule } from './database/database.module';
+import { CoffeeRatingModule } from './api/coffee-rating/coffee-rating.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { DatabaseModule } from './database/database.module';
     UsersModule,
     CoffeesModule,
     DatabaseModule,
+    CoffeeRatingModule,
   ],
   controllers: [],
   providers: [],
