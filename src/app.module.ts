@@ -4,9 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CoffeesModule } from './api/coffees/coffees.module';
 import { CoffeeRatingModule } from './api/coffee-rating/coffee-rating.module';
-import * as Joi from '@hapi/joi';
 import appConfig from './app.config';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { CommonModule } from './common/common.module';
+import { TimeoutInterceptor } from './common/interceptors/timeout/timeout.interceptor';
+import { validateConfig } from './config/validate';
 
 @Module({
   imports: [
@@ -26,15 +28,12 @@ import { APP_PIPE } from '@nestjs/core';
     }),
     ConfigModule.forRoot({
       load: [appConfig],
-      validationSchema: Joi.object({
-        POSTGRES_HOST: Joi.required(),
-        POSTGRES_PORT: Joi.number().default(5432),
-        PORT: Joi.number().default(3000),
-      }),
+      validate: validateConfig,
     }),
     UsersModule,
     CoffeesModule,
     CoffeeRatingModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [
@@ -42,6 +41,7 @@ import { APP_PIPE } from '@nestjs/core';
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
+    { provide: APP_INTERCEPTOR, useClass: TimeoutInterceptor },
   ],
 })
 export class AppModule {}

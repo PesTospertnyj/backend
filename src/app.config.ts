@@ -8,4 +8,6 @@ export default () => ({
     database: process.env.POSTGRES_DB,
   },
   port: parseInt(process.env.PORT) || 3000,
+  api_key: process.env.API_KEY,
+  request_timeout: parseInt(process.env.REQUEST_TIMEOUT) || 5000,
 });
