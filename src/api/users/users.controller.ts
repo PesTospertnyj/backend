@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -49,8 +50,11 @@ export class UsersController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.usersService.update(id, updateUserDto);
   }
 
   @ApiForbiddenResponse({ description: 'Forbidden.' })

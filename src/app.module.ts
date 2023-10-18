@@ -9,6 +9,7 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { CommonModule } from './common/common.module';
 import { TimeoutInterceptor } from './common/interceptors/timeout/timeout.interceptor';
 import { validateConfig } from './config/validate';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -35,7 +36,7 @@ import { validateConfig } from './config/validate';
     CoffeeRatingModule,
     CommonModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_PIPE,

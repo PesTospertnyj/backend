@@ -6,16 +6,16 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Query,
+  ParseIntPipe,
   Patch,
   Post,
-  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
-import { Public } from 'src/common/decorators/public.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
+import { Public } from '../../common/decorators/public.decorator';
 import {
   ApiBadRequestResponse,
   ApiForbiddenResponse,
@@ -41,7 +41,7 @@ export class CoffeesController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.coffeesService.findOne('' + id);
+    return this.coffeesService.findOne(id);
   }
 
   @ApiBadRequestResponse({ description: 'Bad request.' })
