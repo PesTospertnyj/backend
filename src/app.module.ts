@@ -5,11 +5,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CoffeesModule } from './api/coffees/coffees.module';
 import { CoffeeRatingModule } from './api/coffee-rating/coffee-rating.module';
 import appConfig from './app.config';
-import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { CommonModule } from './common/common.module';
 import { TimeoutInterceptor } from './common/interceptors/timeout/timeout.interceptor';
 import { validateConfig } from './config/validate';
 import { AppController } from './app.controller';
+import { HttpExceptionExceptionFilter } from './common/filters/http-exception.filter';
+import { WrapResponseInterceptor } from './common/interceptors/wrap-response/wrap-response.interceptor';
 
 @Module({
   imports: [
@@ -40,9 +42,20 @@ import { AppController } from './app.controller';
   providers: [
     {
       provide: APP_PIPE,
-      useClass: ValidationPipe,
+      useFactory: () => {
+        return new ValidationPipe({
+          whitelist: true,
+          transform: true, // automatically transform payloads to DTO instances.
+          forbidNonWhitelisted: true, // throw an error if a non-whitelisted property is present on the DTO.
+          transformOptions: {
+            enableImplicitConversion: true, // automatically transform primitive types like string to number.
+          },
+        });
+      },
     },
     { provide: APP_INTERCEPTOR, useClass: TimeoutInterceptor },
+    { provide: APP_FILTER, useClass: HttpExceptionExceptionFilter },
+    { provide: APP_INTERCEPTOR, useClass: WrapResponseInterceptor },
   ],
 })
 export class AppModule {}

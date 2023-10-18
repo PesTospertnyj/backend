@@ -51,17 +51,17 @@ describe('CoffeesService', () => {
   describe('findOne', () => {
     describe('when coffee with id exists', () => {
       it('should return the coffee object', async () => {
-        const coffeeId = '1';
+        const coffeeId = 1;
         const expectedCoffee = {};
 
         coffeeRepository.findOne.mockReturnValue(expectedCoffee);
         const coffee = await service.findOne(coffeeId);
-        expect(coffee).toEqual(expectedCoffee);
+        expect(coffee).toEqual(expectedCoffee as Coffee);
       });
     });
     describe('otherwise', () => {
       it('should throw the NotFoundException', async () => {
-        const coffeeId = '1';
+        const coffeeId = 1;
         coffeeRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -77,7 +77,7 @@ describe('CoffeesService', () => {
   describe('update', () => {
     describe('when coffee with id exists', () => {
       it('should return the coffee object', async () => {
-        const coffeeId = '1';
+        const coffeeId = 1;
         const dto: UpdateCoffeeDto = {
           name: 'test',
         };
@@ -86,12 +86,12 @@ describe('CoffeesService', () => {
         coffeeRepository.preload.mockReturnValue(expectedCoffee);
         coffeeRepository.save.mockReturnValue(expectedCoffee);
         const coffee = await service.update(coffeeId, dto);
-        expect(coffee).toEqual(expectedCoffee);
+        expect(coffee).toEqual(expectedCoffee as Coffee);
       });
     });
     describe('otherwise', () => {
       it('should throw the NotFoundException', async () => {
-        const coffeeId = '1';
+        const coffeeId = 1;
         const dto: UpdateCoffeeDto = {
           name: 'test',
         };

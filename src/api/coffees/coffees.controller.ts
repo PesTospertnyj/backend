@@ -57,7 +57,10 @@ export class CoffeesController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCoffeeDto: UpdateCoffeeDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCoffeeDto: UpdateCoffeeDto,
+  ) {
     return this.coffeesService.update(id, updateCoffeeDto);
   }
 
