@@ -3,11 +3,14 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { winstonConfig } from './logger/winston.config';
 
 async function bootstrap() {
   const logger = new Logger('bootstrap');
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: winstonConfig,
+  });
   const options = new DocumentBuilder()
     .setTitle('Backend API')
     .setDescription('Backend API description')

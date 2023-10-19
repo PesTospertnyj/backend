@@ -19,15 +19,19 @@ describe('[Feature] Coffees - /coffees', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         CoffeesModule,
-        TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: 'localhost',
-          port: 5433,
-          username: 'postgres',
-          password: 'root',
-          database: 'backend',
-          autoLoadEntities: true,
-          synchronize: true,
+        TypeOrmModule.forRootAsync({
+          useFactory: () => {
+            return {
+              type: 'postgres',
+              host: 'localhost',
+              port: 5433,
+              username: 'postgres',
+              password: 'root',
+              database: 'backend',
+              autoLoadEntities: true,
+              synchronize: true,
+            };
+          },
         }),
       ],
     }).compile();

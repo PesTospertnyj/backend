@@ -27,7 +27,7 @@ export class UsersController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
@@ -42,8 +42,8 @@ export class UsersController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
   }
 
   @ApiBadRequestResponse({ description: 'Bad request.' })

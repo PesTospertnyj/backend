@@ -1,17 +1,18 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Logger, Module, ValidationPipe } from '@nestjs/common';
 import { UsersModule } from './api/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CoffeesModule } from './api/coffees/coffees.module';
 import { CoffeeRatingModule } from './api/coffee-rating/coffee-rating.module';
 import appConfig from './app.config';
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { CommonModule } from './common/common.module';
 import { TimeoutInterceptor } from './common/interceptors/timeout/timeout.interceptor';
 import { validateConfig } from './config/validate';
 import { AppController } from './app.controller';
 import { HttpExceptionExceptionFilter } from './common/filters/http-exception.filter';
-import { WrapResponseInterceptor } from './common/interceptors/wrap-response/wrap-response.interceptor';
+import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { winstonConfig } from './logger/winston.config';
 
 @Module({
   imports: [
@@ -28,6 +29,16 @@ import { WrapResponseInterceptor } from './common/interceptors/wrap-response/wra
         entities: ['dist/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => [
+        {
+          ttl: seconds(configService.get('THROTTLE_TTL')),
+          limit: configService.get('THROTTLE_LIMIT'),
+        },
+      ],
     }),
     ConfigModule.forRoot({
       load: [appConfig],
@@ -53,9 +64,16 @@ import { WrapResponseInterceptor } from './common/interceptors/wrap-response/wra
         });
       },
     },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
     { provide: APP_INTERCEPTOR, useClass: TimeoutInterceptor },
     { provide: APP_FILTER, useClass: HttpExceptionExceptionFilter },
-    { provide: APP_INTERCEPTOR, useClass: WrapResponseInterceptor },
+    {
+      provide: Logger,
+      useValue: winstonConfig,
+    },
   ],
 })
 export class AppModule {}

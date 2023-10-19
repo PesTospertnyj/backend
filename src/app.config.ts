@@ -10,4 +10,6 @@ export default () => ({
   port: parseInt(process.env.PORT) || 3000,
   api_key: process.env.API_KEY,
   request_timeout: parseInt(process.env.REQUEST_TIMEOUT) || 5000,
+  throttle_ttl: parseInt(process.env.THROTTLE_TTL) || 1000,
+  throttle_limit: parseInt(process.env.THROTTLE_LIMIT) || 10,
 });

@@ -12,21 +12,31 @@ describe('[Feature] Users - /users', () => {
   const user = {
     firstName: 'John',
     lastName: 'Buddy',
+    password: 'Somestrongpasscode12746ahdf',
+  };
+
+  const expUser = {
+    firstName: 'John',
+    lastName: 'Buddy',
   };
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         UsersModule,
-        TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: 'localhost',
-          port: 5433,
-          username: 'postgres',
-          password: 'root',
-          database: 'backend',
-          autoLoadEntities: true,
-          synchronize: true,
+        TypeOrmModule.forRootAsync({
+          useFactory: () => {
+            return {
+              type: 'postgres',
+              host: 'localhost',
+              port: 5433,
+              username: 'postgres',
+              password: 'root',
+              database: 'backend',
+              autoLoadEntities: true,
+              synchronize: true,
+            };
+          },
         }),
       ],
     }).compile();
@@ -54,10 +64,11 @@ describe('[Feature] Users - /users', () => {
       .expect(HttpStatus.CREATED);
 
     const expectedUser = expect.objectContaining({
-      ...user,
+      ...expUser,
     });
     expect(body).toBeDefined();
     expect(body).toEqual(expectedUser);
+    expect(body.password).toBeUndefined();
   });
 
   it('Get all [GET /]', async () => {
@@ -67,11 +78,15 @@ describe('[Feature] Users - /users', () => {
 
     const expectedUsers = expect.arrayContaining([
       expect.objectContaining({
-        ...user,
+        ...expUser,
       }),
     ]);
     expect(body).toBeDefined();
     expect(body).toEqual(expectedUsers);
+
+    body.forEach((user: any) => {
+      expect(user.password).toBeUndefined();
+    });
   });
 
   it('Get one [GET /:id]', async () => {
@@ -80,10 +95,11 @@ describe('[Feature] Users - /users', () => {
       .expect(HttpStatus.OK);
 
     const expectedUser = expect.objectContaining({
-      ...user,
+      ...expUser,
     });
     expect(body).toBeDefined();
     expect(body).toEqual(expectedUser);
+    expect(body.password).toBeUndefined();
   });
 
   it('Update [PATCH /:id]', async () => {
@@ -93,13 +109,14 @@ describe('[Feature] Users - /users', () => {
       .expect(HttpStatus.OK);
 
     const expectedUser = expect.objectContaining({
-      ...user,
+      ...expUser,
     });
 
     console.log('body', body);
     console.log('expectedUser', expectedUser);
     expect(body).toBeDefined();
     expect(body).toEqual(expectedUser);
+    expect(body.password).toBeUndefined();
   });
 
   it('Delete [DELETE /:id]', () => {
