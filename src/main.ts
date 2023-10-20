@@ -25,6 +25,8 @@ async function bootstrap() {
 
   logger.log(`Listening on port ${port}`);
 
+  app.enableCors();
+
   await app.listen(port);
 }
 

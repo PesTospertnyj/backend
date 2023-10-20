@@ -13,6 +13,8 @@ import { AppController } from './app.controller';
 import { HttpExceptionExceptionFilter } from './common/filters/http-exception.filter';
 import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { winstonConfig } from './logger/winston.config';
+import { CarsModule } from './api/cars/cars.module';
+import { MinioModule } from './storage/minio/minio.module';
 
 @Module({
   imports: [
@@ -43,11 +45,14 @@ import { winstonConfig } from './logger/winston.config';
     ConfigModule.forRoot({
       load: [appConfig],
       validate: validateConfig,
+      cache: true,
     }),
     UsersModule,
     CoffeesModule,
     CoffeeRatingModule,
     CommonModule,
+    CarsModule,
+    MinioModule,
   ],
   controllers: [AppController],
   providers: [

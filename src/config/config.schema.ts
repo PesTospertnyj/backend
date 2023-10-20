@@ -11,4 +11,11 @@ export const configurationSchema = z.object({
   REQUEST_TIMEOUT: z.coerce.number().int().default(5000),
   THROTTLE_TTL: z.coerce.number().int().default(1000),
   THROTTLE_LIMIT: z.coerce.number().int().default(10),
+  MINIO_HOST: z.string().trim().default('localhost'),
+  MINIO_PORT: z.coerce.number().int().default(9000),
+  MINIO_USE_SSL: z.coerce.boolean().default(false),
+  MINIO_ACCESS_KEY: z.string().trim(),
+  MINIO_SECRET_KEY: z.string().trim(),
+  MINIO_BUCKET_NAME: z.string().trim(),
+  MINIO_REGION: z.string().trim(),
 });
